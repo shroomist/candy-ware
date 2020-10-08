@@ -70,7 +70,7 @@ btn_reading* getBtnReading (byte target) {
         //     changeParam(6, NOTE_B);
         //   }
         // }
-      }
+      // }
       // while pressing CHAN  key
       // TODO: GLOBAL SELECT CHANNEL
       //////////////////////////////
@@ -130,9 +130,9 @@ btn_reading* getBtnReading (byte target) {
       //   }
       // }
       ////////////////////////////////////
-    }
-  }
-}
+//     }
+//   }
+// }
 
 // byte isEditMode = 15;
 // void enterEditMode(byte whichChannel) {

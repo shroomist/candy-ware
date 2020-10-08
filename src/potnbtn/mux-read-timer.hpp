@@ -3,9 +3,7 @@
 
 #include "Arduino.h"
 #include "../sch/header.hpp"
-
-using set_param = std::function<void (int, int)>;
-using set_btn = std::function<void (int, bool)>;
+#include "set-pot-btn.hpp"
 
 struct read_target {
   bool isPot;

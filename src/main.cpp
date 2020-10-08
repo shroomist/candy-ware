@@ -7,6 +7,8 @@
 
 #include "debug.h"
 #include "potnbtn/mux-read-timer.hpp"
+#include "ctrl/ctrl.hpp"
+
 #include <Arduino.h> //for Serial and delay
 
 Scheduler runner; //Let the scheduler live here, in the main file, ok?
@@ -24,10 +26,18 @@ void setBtn (int target, bool value) {
   _PP(target);
   _PP(" = ");
   _PL(value);
-
 }
 
-MuxReadTimer mrt(1, setParam, setBtn);
+CtrlLog logController;
+ctrl_id logId = Log;
+ctrl logCtrl = {logId, &logController};
+all_ctrls allCtrls = {logCtrl};
+CtrlSwitch controlSwitch(allCtrls);
+
+
+// MuxReadTimer mrt(1, setParam, setBtn);
+param_btn_handles hs = logController.getHandles();
+MuxReadTimer mrt(1, hs.param, hs.btn);
 
 //Pretend, that the t2 task is a special task,
 //that needs to live in file2 object file.
