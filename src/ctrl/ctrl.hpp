@@ -27,21 +27,24 @@ struct ctrl {
 
 struct all_ctrls {
   ctrl log;
-  // ctrl synth;
+  ctrl synth;
 };
 
 class CtrlSwitch {
   public:
     CtrlSwitch(all_ctrls allCtrls);
     // ~CtrlSwitch ();
+    param_btn_handles getHandles();
+    void switchHandle (ctrl_id switchToId);
   private:
+    ctrl* activeCtrl;
     all_ctrls allCtrls;
 
 };
 
 class CtrlLog : public Ctrl {
   public:
-    CtrlLog();
+    CtrlLog(byte id);
     param_btn_handles getHandles();
   private:
     param_btn_handles hs;
