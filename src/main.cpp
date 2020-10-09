@@ -28,19 +28,15 @@ void setBtn (int target, bool value) {
   _PL(value);
 }
 
-CtrlLog logController(0);
-CtrlLog logController1(1);
-ctrl_id logId = Log;
-ctrl logCtrl = {logId, &logController};
+CtrlLog logController("log");
+CtrlLog logController1("synth");
+ctrl logCtrl = {Log, &logController};
 ctrl logCtrl1 = {Synth, &logController1};
 all_ctrls allCtrls = {logCtrl, logCtrl1};
 
 CtrlSwitch controlSwitch(allCtrls);
 param_btn_handles hs1 = controlSwitch.getHandles();
 
-
-// MuxReadTimer mrt(1, setParam, setBtn);
-param_btn_handles hs = logController.getHandles();
 MuxReadTimer mrt(1, hs1.param, hs1.btn);
 
 //Pretend, that the t2 task is a special task,

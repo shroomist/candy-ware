@@ -39,12 +39,13 @@ class CtrlSwitch {
   private:
     ctrl* activeCtrl;
     all_ctrls allCtrls;
+    ctrl_id activeId;
 
 };
 
 class CtrlLog : public Ctrl {
   public:
-    CtrlLog(byte id);
+    CtrlLog(String id);
     param_btn_handles getHandles();
   private:
     param_btn_handles hs;

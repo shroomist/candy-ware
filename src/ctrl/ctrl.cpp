@@ -1,16 +1,17 @@
 #include "ctrl.hpp"
 #include "debug.h"
 
-CtrlLog::CtrlLog (byte id) {
+CtrlLog::CtrlLog (String id) {
   set_param potH = [id] (int target, int value) {
     _PP(id);
-    _PP(" CTRLPOT value for: ");
+    _PP(" value for: ");
     _PP(target);
     _PP(" = ");
     _PL(value);
   };
-  set_btn btnH = [] (int target, bool value) {
-    _PP("CTRLBTN value for: ");
+  set_btn btnH = [id] (int target, bool value) {
+    _PP(id);
+    _PP(" value for: ");
     _PP(target);
     _PP(" = ");
 
@@ -30,10 +31,37 @@ CtrlSwitch::CtrlSwitch(all_ctrls allCtls): allCtrls{allCtls} {
 };
 
 param_btn_handles CtrlSwitch::getHandles () {
-  return activeCtrl->c->getHandles();
+
+  set_param potH = [this] (int target, int value) {
+    _PP(" CTRLPOT value for: ");
+    _PP(target);
+    _PP(" = ");
+    _PL(value);
+    if (activeId == Synth) {
+      allCtrls.synth.c->getHandles().param(target, value);
+    } else {
+      allCtrls.log.c->getHandles().param(target, value);
+    }
+  };
+  set_btn btnH = [this] (int target, bool value) {
+    _PP("CTRLBTN value for: ");
+    _PP(target);
+    _PP(" = ");
+
+    _PL(value);
+    if (value == 1) {
+      switchHandle(Synth);
+    } else {
+      switchHandle(Log);
+    }
+  };
+
+  return (param_btn_handles{potH, btnH});
 }
 
+
 void CtrlSwitch::switchHandle (ctrl_id switchToId) {
+  activeId = switchToId;
   switch (switchToId) {
     case Log :
       activeCtrl = &allCtrls.log;
