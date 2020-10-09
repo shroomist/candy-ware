@@ -18,6 +18,7 @@ class Ctrl {
 enum ctrl_id {
 Log = 0,
 Synth = 1,
+DisplayC = 2,
 };
 
 struct ctrl {
@@ -28,6 +29,7 @@ struct ctrl {
 struct all_ctrls {
   ctrl log;
   ctrl synth;
+  ctrl displ;
 };
 
 class CtrlSwitch {

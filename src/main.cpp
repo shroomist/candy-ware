@@ -9,6 +9,8 @@
 #include "potnbtn/mux-read-timer.hpp"
 #include "ctrl/ctrl.hpp"
 
+#include "display/dis.hpp"
+
 #include <Arduino.h> //for Serial and delay
 
 Scheduler runner; //Let the scheduler live here, in the main file, ok?
@@ -30,9 +32,11 @@ void setBtn (int target, bool value) {
 
 CtrlLog logController("log");
 CtrlLog logController1("synth");
+Displ displ;
 ctrl logCtrl = {Log, &logController};
 ctrl logCtrl1 = {Synth, &logController1};
-all_ctrls allCtrls = {logCtrl, logCtrl1};
+ctrl displCtrl = {DisplayC, &displ};
+all_ctrls allCtrls = {logCtrl, logCtrl1, displCtrl};
 
 CtrlSwitch controlSwitch(allCtrls);
 param_btn_handles hs1 = controlSwitch.getHandles();
@@ -54,6 +58,7 @@ void t3Callback() {
     Serial.println(millis());
 }
 
+
 void setup () {
   Serial.begin(115200);
   delay(5000);
@@ -61,6 +66,7 @@ void setup () {
 
   runner.startNow();  // set point-in-time for scheduling start
   mrt.enable();
+  displ.setup();
 }
 
 

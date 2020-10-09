@@ -37,6 +37,7 @@ param_btn_handles CtrlSwitch::getHandles () {
     _PP(target);
     _PP(" = ");
     _PL(value);
+    allCtrls.displ.c->getHandles().param(target, value);
     if (activeId == Synth) {
       allCtrls.synth.c->getHandles().param(target, value);
     } else {
@@ -49,6 +50,7 @@ param_btn_handles CtrlSwitch::getHandles () {
     _PP(" = ");
 
     _PL(value);
+    allCtrls.displ.c->getHandles().btn(target, value);
     if (value == 1) {
       switchHandle(Synth);
     } else {
