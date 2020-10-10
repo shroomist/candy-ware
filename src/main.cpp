@@ -10,6 +10,7 @@
 #include "ctrl/ctrl.hpp"
 
 #include "display/dis.hpp"
+#include "synth/synth.hpp"
 
 #include <Arduino.h> //for Serial and delay
 
@@ -33,10 +34,11 @@ void setBtn (int target, bool value) {
 CtrlLog logController("log");
 CtrlLog logController1("synth");
 Displ displ;
+Synth synth;
 ctrl logCtrl = {Log, &logController};
-ctrl logCtrl1 = {Synth, &logController1};
+ctrl synthCtrl = {SynthC, &synth};
 ctrl displCtrl = {DisplayC, &displ};
-all_ctrls allCtrls = {logCtrl, logCtrl1, displCtrl};
+all_ctrls allCtrls = {logCtrl, synthCtrl, displCtrl};
 
 CtrlSwitch controlSwitch(allCtrls);
 param_btn_handles hs1 = controlSwitch.getHandles();
@@ -67,6 +69,7 @@ void setup () {
   runner.startNow();  // set point-in-time for scheduling start
   mrt.enable();
   displ.setup();
+  initOPL();
 }
 
 

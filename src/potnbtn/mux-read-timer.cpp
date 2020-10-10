@@ -5,8 +5,8 @@
 
 #include "debug.h"
 
-#define READ_PERIOD 3
-#define MUX_DELAY 2
+#define READ_PERIOD 2
+#define MUX_DELAY 1
 
 
 MuxReadTimer::MuxReadTimer (int b, set_param setParam, set_btn setBtn) {

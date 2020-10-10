@@ -17,7 +17,7 @@ class Ctrl {
 
 enum ctrl_id {
 Log = 0,
-Synth = 1,
+SynthC = 1,
 DisplayC = 2,
 };
 

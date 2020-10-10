@@ -33,29 +33,12 @@ CtrlSwitch::CtrlSwitch(all_ctrls allCtls): allCtrls{allCtls} {
 param_btn_handles CtrlSwitch::getHandles () {
 
   set_param potH = [this] (int target, int value) {
-    _PP(" CTRLPOT value for: ");
-    _PP(target);
-    _PP(" = ");
-    _PL(value);
     allCtrls.displ.c->getHandles().param(target, value);
-    if (activeId == Synth) {
-      allCtrls.synth.c->getHandles().param(target, value);
-    } else {
-      allCtrls.log.c->getHandles().param(target, value);
-    }
+    allCtrls.synth.c->getHandles().param(target, value);
   };
   set_btn btnH = [this] (int target, bool value) {
-    _PP("CTRLBTN value for: ");
-    _PP(target);
-    _PP(" = ");
-
-    _PL(value);
     allCtrls.displ.c->getHandles().btn(target, value);
-    if (value == 1) {
-      switchHandle(Synth);
-    } else {
-      switchHandle(Log);
-    }
+    allCtrls.synth.c->getHandles().btn(target, value);
   };
 
   return (param_btn_handles{potH, btnH});
@@ -68,7 +51,7 @@ void CtrlSwitch::switchHandle (ctrl_id switchToId) {
     case Log :
       activeCtrl = &allCtrls.log;
       break;
-    case Synth :
+    case SynthC :
       activeCtrl = &allCtrls.synth;
   }
 }
