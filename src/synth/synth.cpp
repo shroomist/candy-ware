@@ -4,6 +4,17 @@
 
 OPL2 opl2 = OPL2(PB8,PB9,PB10);
 
+void Synth::play(byte inst, bool gate) {
+  if (inst <= 3) {
+    opl2.playDrum(drums[inst], octave[channel], NOTE_C);
+    opl2.setKeyOn(inst, gate);
+  }
+  else
+  {
+    opl2.playNote(0, octave[0], 15-inst);
+  }
+}
+
 void initOPL () {
   opl2.init();
   opl2.setPercussion(true);
@@ -125,14 +136,12 @@ param_btn_handles Synth::getHandles() {
   set_btn btnH = [this] (int t, bool v) {
     if (t <= 3) {
       channel = 6+t;
-      opl2.playDrum(drums[t], octave[channel], NOTE_C);
-      opl2.setKeyOn(t, v);
     }
     else
     {
       channel = 0;
-      opl2.playNote(0, octave[0], 15-t);
     }
+    play(t, v);
   };
   return param_btn_handles{potH, btnH};
 };

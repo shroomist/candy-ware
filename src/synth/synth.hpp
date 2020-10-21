@@ -16,6 +16,7 @@ class Synth: public Ctrl {
     byte octave[8];
     byte drums[5];
     byte channel;
+    void play(byte inst, bool gate);
 };
 
 void tremVibratos(byte channel, byte value);
@@ -39,5 +40,6 @@ const int boundaries[16][2] = { // was [24][2]
     {0, 64}, // 14 tremolos vibratos
     {64, 0}  // 15 VOL2
 };
+
 
 #endif // __SYNTH_H_
