@@ -5,21 +5,23 @@
 OPL2 opl2 = OPL2(PB8,PB9,PB10);
 
 void Synth::play(byte inst, bool gate) {
-  if (inst <= 3) {
-    opl2.playDrum(drums[inst], octave[channel], NOTE_C);
+  if (inst > 3) {
+    opl2.playDrum(drums[inst-5], octave[channel], NOTE_C);
     opl2.setKeyOn(inst, gate);
   }
   else
   {
-    opl2.playNote(0, octave[0], 15-inst);
+    opl2.playNote(0, octave[0], inst);
   }
 }
 
 void initOPL () {
   opl2.init();
   opl2.setPercussion(true);
-  Instrument piano = opl2.loadInstrument(INSTRUMENT_PIANO1);
+  Instrument piano = opl2.loadInstrument(INSTRUMENT_BASS1);
+  Instrument piano2 = opl2.loadInstrument(INSTRUMENT_ELECVIBE);
   opl2.setInstrument(0, piano);
+  opl2.setInstrument(1, piano2);
   opl2.setBlock(0, 4);
   Instrument bass = opl2.loadInstrument(INSTRUMENT_BDRUM1);
   Instrument snare = opl2.loadInstrument(INSTRUMENT_RKSNARE1);
@@ -61,10 +63,6 @@ void Synth::changeParam(byte channel, byte param, int value) {
       // if (bitRead(!keyboardAccumulator, 0)) {
         octave[channel] = value >> 2;
         opl2.setBlock(channel, value >> 2);
-        _PP("set octave ch:");
-        _PP(channel);
-        _PP(" : ");
-        _PL(value >> 2);
       // } else { // while pressing SHIFT we change notes
       //   opl2.playNote(channel, octave[channel], value);
       //   Serial.print("6 NOTE: ");
@@ -134,14 +132,10 @@ param_btn_handles Synth::getHandles() {
     changeParam(channel, t, synthValue);
   };
   set_btn btnH = [this] (int t, bool v) {
-    if (t <= 3) {
-      channel = 6+t;
+    channel = t;
+    if (v == 1) {
+      play(t, v);
     }
-    else
-    {
-      channel = 0;
-    }
-    play(t, v);
   };
   return param_btn_handles{potH, btnH};
 };

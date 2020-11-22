@@ -37,8 +37,11 @@ param_btn_handles CtrlSwitch::getHandles () {
     allCtrls.synth.c->getHandles().param(target, value);
   };
   set_btn btnH = [this] (int target, bool value) {
+    if (target >= 8) {
+      allCtrls.synth.c->getHandles().btn(15 - target, value);
+    }
     allCtrls.displ.c->getHandles().btn(target, value);
-    allCtrls.synth.c->getHandles().btn(target, value);
+    allCtrls.seq.c->getHandles().btn(target,value);
   };
 
   return (param_btn_handles{potH, btnH});

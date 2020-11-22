@@ -6,8 +6,7 @@
 
 // OPL2 opl2;
 void initOPL();
-//
-//
+
 class Synth: public Ctrl {
   public:
     Synth();

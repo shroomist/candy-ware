@@ -1,4 +1,4 @@
-#include "seq.h"
+#include "seq.hpp"
 #include "debug.h"
 
 int currentStep = 0;
@@ -73,17 +73,39 @@ Sequencer::Sequencer (Synth* synth): synth(synth), currentStep(0) {
     }
     if (currentStep >= 15) { currentStep = 0; }
     else {currentStep = currentStep + 1;}
-
   });
+  setupHandles();
+};
+
+
+param_btn_handles Sequencer::getHandles() {
+  return hs;
 };
 
 void Sequencer::start () {
   _PL("enabling seq");
   sequencerGoNextStep.enableDelayed();
+  running = true;
 }
+
+void Sequencer::setupHandles () {
+  set_param potH = [] (int target, int value) {
+  };
+  set_btn btnH = [this] (int target, bool value) {
+    if (value == 0) return;
+    switch (target) {
+      case 7: if (running) { stop(); } else { start(); }; break;
+    }
+  };
+
+  hs = {potH, btnH};
+
+};
 
 void Sequencer::stop () {
   sequencerGoNextStep.disable();
+  running = false;
+  currentStep = 0;
 }
 
 void Sequencer::setTempo (int bpm) {

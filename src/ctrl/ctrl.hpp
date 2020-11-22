@@ -19,17 +19,19 @@ enum ctrl_id {
 Log = 0,
 SynthC = 1,
 DisplayC = 2,
+SeqC = 3,
 };
 
-struct ctrl {
+struct str_ctrl {
   ctrl_id id;
   Ctrl* c;
 };
 
 struct all_ctrls {
-  ctrl log;
-  ctrl synth;
-  ctrl displ;
+  str_ctrl log;
+  str_ctrl synth;
+  str_ctrl displ;
+  str_ctrl seq;
 };
 
 class CtrlSwitch {
@@ -39,7 +41,7 @@ class CtrlSwitch {
     param_btn_handles getHandles();
     void switchHandle (ctrl_id switchToId);
   private:
-    ctrl* activeCtrl;
+    str_ctrl* activeCtrl;
     all_ctrls allCtrls;
     ctrl_id activeId;
 
