@@ -12,9 +12,7 @@ struct read_target {
 
 class MuxReadTimer {
   public:
-    int cumSum = 0; // cumulative sum
-    // int readTarget = 0;
-    MuxReadTimer(int b, set_param setParam, set_btn setBtn) ;
+    MuxReadTimer(set_param setParam, set_btn setBtn) ;
     Task tSetReadReady;
     Task tSetMuxReadTarget;
     void nextReadTarget ();

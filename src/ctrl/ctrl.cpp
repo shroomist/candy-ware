@@ -14,7 +14,6 @@ CtrlLog::CtrlLog (String id) {
     _PP(" value for: ");
     _PP(target);
     _PP(" = ");
-
     _PL(value);
   };
 
@@ -37,7 +36,7 @@ param_btn_handles CtrlSwitch::getHandles () {
     allCtrls.synth.c->getHandles().param(target, value);
   };
   set_btn btnH = [this] (int target, bool value) {
-    if (target >= 8) {
+    if (target >= 6) {
       allCtrls.synth.c->getHandles().btn(15 - target, value);
     }
     allCtrls.displ.c->getHandles().btn(target, value);

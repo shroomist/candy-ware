@@ -4,8 +4,8 @@
 
 byte currentPot = 0;
 int pot[POT_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-// int lastPot[POT_COUNT] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-int debounceRange = 32; // 5
+bool initialized[POT_COUNT] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+int debounceRange = 24; // 5
 
 int potRead () {
   return (analogRead(POT_Pin));
@@ -21,11 +21,25 @@ pot_reading potReading{true,0};
 
 pot_reading* getPotReading (byte target) {
   potReading.target = target;
+
+  if (!initialized[target]) {
+    potReading.isNew = false;
+    potReading.value = potRead();
+    initialized[target] = true;
+    pot[target] = potReading.value;
+    return &potReading;
+  }
+
   potReading.value = softDebounce(potRead(), pot[target]);
-  potReading.isNew = potReading.value != pot[target];
+
+  if (initialized[target]) {
+    potReading.isNew = potReading.value != pot[target];
+  }
+
   if (potReading.isNew) {
     pot[target] = potReading.value;
   }
+
   return &potReading;
 }
 

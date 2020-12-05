@@ -8,7 +8,7 @@ void check () {
 };
 
 
-int bpm = 120;
+int bpm = 60;
 bool seqPlaying = true;
 
 
@@ -94,7 +94,7 @@ void Sequencer::setupHandles () {
   set_btn btnH = [this] (int target, bool value) {
     if (value == 0) return;
     switch (target) {
-      case 7: if (running) { stop(); } else { start(); }; break;
+      case 1: if (running) { stop(); } else { start(); }; break;
     }
   };
 

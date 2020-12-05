@@ -9,21 +9,19 @@
 #define MUX_DELAY 1
 
 
-MuxReadTimer::MuxReadTimer (int b, set_param setParam, set_btn setBtn) {
-  // Pass the this pointer, so that we get access to this->cumSum
-  // Also pass a copy of b
+MuxReadTimer::MuxReadTimer (set_param setParam, set_btn setBtn) {
+
   setupMux();
   setupPots();
   setupBtn();
 
-  tSetMuxReadTarget.set( READ_PERIOD, TASK_FOREVER, [this] () {
+  tSetMuxReadTarget.set(READ_PERIOD, TASK_FOREVER, [this] () {
     nextReadTarget();
-
-      queryMux(readTarget.target);
-
+    queryMux(readTarget.target);
   });
 
-  tSetReadReady.set( READ_PERIOD, TASK_FOREVER, [this, b, setParam, setBtn]() {
+  auto getMuxReading = [this, setParam, setBtn]() {
+
     if (readTarget.isPot) {
       pot_reading* currentPotRead = getPotReading(readTarget.target); // TODO: GC?
       if (currentPotRead->isNew) {
@@ -31,16 +29,19 @@ MuxReadTimer::MuxReadTimer (int b, set_param setParam, set_btn setBtn) {
       }
 
     } else {
-
       btn_reading* currentBtnRead = getBtnReading(readTarget.target);
       if (currentBtnRead->isNew) {
         setBtn(currentBtnRead->target, currentBtnRead->value);
       }
-
     }
-  });
+
+  };
+
+  tSetReadReady.set(READ_PERIOD, TASK_FOREVER, getMuxReading);
+
   runner.addTask(tSetMuxReadTarget);
   runner.addTask(tSetReadReady);
+
 }
 
 void MuxReadTimer::enable () { // Should be at the end of setup()

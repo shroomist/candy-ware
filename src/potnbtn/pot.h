@@ -33,11 +33,11 @@ int softDebounce(int readCV, int oldRead);
 
 struct pot_reading {
   bool isNew;
-    int value;
-    byte target;
+  int value;
+  byte target;
 };
 
-struct pot_reading* getPotReading (byte target);
+struct pot_reading *getPotReading(byte target);
 
 void setupPots ();
 int potRead () ;

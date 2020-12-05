@@ -5,36 +5,74 @@
 OPL2 opl2 = OPL2(PB8,PB9,PB10);
 
 void Synth::play(byte inst, bool gate) {
-  if (inst > 3) {
-    opl2.playDrum(drums[inst-5], octave[channel], NOTE_C);
-    opl2.setKeyOn(inst, gate);
+  if (inst > 5) {
+    byte drumnum = inst-6;
+    _PP("DRUM NO");
+    _PL(drumnum);
+    if (gate) {
+      opl2.playDrum(drums[drumnum], octave[channel], NOTE_C);
+    }
+    // opl2.setKeyOn(inst, gate);
   }
   else
   {
-    opl2.playNote(0, octave[0], inst);
+    if (gate) {
+      opl2.playNote(inst, octave[inst], NOTE_C);
+    } else {
+      opl2.setKeyOn(inst, false);
+    }
   }
 }
 
 void initOPL () {
   opl2.init();
-  opl2.setPercussion(true);
+
   Instrument piano = opl2.loadInstrument(INSTRUMENT_BASS1);
-  Instrument piano2 = opl2.loadInstrument(INSTRUMENT_ELECVIBE);
+  Instrument piano1 = opl2.loadInstrument(INSTRUMENT_ELECVIBE);
+  Instrument piano2 = opl2.loadInstrument(INSTRUMENT_CELESTA);
+  Instrument piano3 = opl2.loadInstrument(INSTRUMENT_SITAR1);
+  Instrument piano4 = opl2.loadInstrument(INSTRUMENT_ORGAN1);
+  Instrument piano5 = opl2.loadInstrument(INSTRUMENT_SCRATCH);
+
   opl2.setInstrument(0, piano);
-  opl2.setInstrument(1, piano2);
+  opl2.setInstrument(1, piano1);
+  opl2.setInstrument(2, piano2);
+  opl2.setInstrument(3, piano3);
+  opl2.setInstrument(4, piano4);
+  opl2.setInstrument(5, piano5);
   opl2.setBlock(0, 4);
+  opl2.setBlock(1, 4);
+  opl2.setBlock(2, 4);
+  opl2.setBlock(3, 4);
+  opl2.setBlock(4, 4);
+  opl2.setBlock(5, 4);
+
+  opl2.setPercussion(true);
   Instrument bass = opl2.loadInstrument(INSTRUMENT_BDRUM1);
   Instrument snare = opl2.loadInstrument(INSTRUMENT_RKSNARE1);
   Instrument tom = opl2.loadInstrument(INSTRUMENT_TOM2);
   Instrument cymbal = opl2.loadInstrument(INSTRUMENT_CYMBAL1);
   Instrument hihat = opl2.loadInstrument(INSTRUMENT_HIHAT2);
+
   opl2.setDrumInstrument(bass);
   opl2.setDrumInstrument(snare);
   opl2.setDrumInstrument(tom);
   opl2.setDrumInstrument(cymbal);
   opl2.setDrumInstrument(hihat);
-  // opl2.setBlock(6, 4); //bd
+
+  // Set octave and frequency for bass drum.
+  // opl2.setBlock(6, 5);
   // opl2.setFNumber(6, opl2.getNoteFNumber(NOTE_C));
+
+  // // Set octave and frequency for snare drum and hi-hat.
+  // opl2.setBlock(7, 2);
+  // opl2.setFNumber(7, opl2.getNoteFNumber(NOTE_C));
+  // // Set low volume on hi-hat
+  // opl2.setVolume(7, OPERATOR1, 16);
+
+  // // Set octave and frequency for tom tom and cymbal.
+  // opl2.setBlock(8, 3);
+  // opl2.setFNumber(8, opl2.getNoteFNumber(NOTE_A));
 };
 
 void Synth::changeParam(byte channel, byte param, int value) {
@@ -132,10 +170,10 @@ param_btn_handles Synth::getHandles() {
     changeParam(channel, t, synthValue);
   };
   set_btn btnH = [this] (int t, bool v) {
+    _PP("cahhen");
+    _PL(channel);
     channel = t;
-    if (v == 1) {
-      play(t, v);
-    }
+    play(t, v);
   };
   return param_btn_handles{potH, btnH};
 };
