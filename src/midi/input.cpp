@@ -1,6 +1,6 @@
 #include "input.hpp"
 
-#define MIDI_DRUM_CH 60
+#define MIDI_DRUM_CH 16
 
 HardwareSerial Serial2(PA3, PA2); // RX, TX -- to unused pin PB1
 // #include <SoftwareSerial.h>
@@ -10,7 +10,7 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, midi2);
 void handleNoteOn(byte channel, byte pitch, byte velocity) {
   _PP("ch: ");
   _PL(channel);
-  if (channel == 16) {
+  if (channel == MIDI_DRUM_CH) {
     _PP("trk: ");
     byte track = pitch - 35;
     _PL(track);
