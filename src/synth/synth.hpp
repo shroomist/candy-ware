@@ -16,6 +16,8 @@ class Synth: public Ctrl {
     byte drums[5];
     byte channel;
     void play(byte inst, bool gate);
+    void handleNote(byte inst, byte pitch, byte velo);
+    void handleNoteOff(byte inst);
 };
 
 void tremVibratos(byte channel, byte value);

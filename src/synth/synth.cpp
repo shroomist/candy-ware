@@ -4,6 +4,13 @@
 
 OPL2 opl2 = OPL2(PB8,PB9,PB10);
 
+void Synth::handleNote(byte track, byte pitch, byte velocity) {
+  opl2.playNote(track,  pitch / 12 + octave[track], pitch % 12);
+}
+void Synth::handleNoteOff(byte track) {
+  opl2.setKeyOn(track, false);
+}
+
 void Synth::play(byte inst, bool gate) {
   if (inst > 5) {
     byte drumnum = inst-6;
@@ -32,7 +39,7 @@ void initOPL () {
   Instrument piano2 = opl2.loadInstrument(INSTRUMENT_CELESTA);
   Instrument piano3 = opl2.loadInstrument(INSTRUMENT_SITAR1);
   Instrument piano4 = opl2.loadInstrument(INSTRUMENT_ORGAN1);
-  Instrument piano5 = opl2.loadInstrument(INSTRUMENT_SCRATCH);
+  Instrument piano5 = opl2.loadInstrument(INSTRUMENT_SYN6);
 
   opl2.setInstrument(0, piano);
   opl2.setInstrument(1, piano1);
@@ -100,7 +107,11 @@ void Synth::changeParam(byte channel, byte param, int value) {
       // with no shift we change octaves
       // if (bitRead(!keyboardAccumulator, 0)) {
         octave[channel] = value >> 2;
-        opl2.setBlock(channel, value >> 2);
+        _PP("ch ");
+        _PP(channel);
+        _PP(" ");
+        _PL(octave[channel]);
+        // opl2.setBlock(channel, value >> 2);
       // } else { // while pressing SHIFT we change notes
       //   opl2.playNote(channel, octave[channel], value);
       //   Serial.print("6 NOTE: ");
@@ -159,7 +170,7 @@ void tremVibratos(byte channel, byte value) {
 }
 
 Synth::Synth():
-  octave{4,4,4,4,4,4},
+  octave{0,0,0,0,0,0},
   drums{DRUM_BASS,DRUM_SNARE,DRUM_TOM,DRUM_HI_HAT,DRUM_CYMBAL},
   channel(0)
 {};
@@ -170,8 +181,6 @@ param_btn_handles Synth::getHandles() {
     changeParam(channel, t, synthValue);
   };
   set_btn btnH = [this] (int t, bool v) {
-    _PP("cahhen");
-    _PL(channel);
     channel = t;
     play(t, v);
   };
