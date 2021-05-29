@@ -1,5 +1,5 @@
 #include "synth.hpp"
-#include <instruments.h>
+#include "instr.hpp"
 #include "debug.h"
 
 OPL2 opl2 = OPL2(PB8,PB9,PB10);
@@ -19,36 +19,10 @@ void Synth::handleNoteOff(byte track) {
 void initOPL () {
   opl2.init();
 
-  Instrument kick = opl2.loadInstrument(INSTRUMENT_BDRUM1);
-  Instrument snare = opl2.loadInstrument(INSTRUMENT_SNARE1);
-  Instrument rksnare = opl2.loadInstrument(INSTRUMENT_SCRATCH);
-  Instrument tom = opl2.loadInstrument(INSTRUMENT_SHRTVIBE);
-
-  Instrument hat = opl2.loadInstrument(INSTRUMENT_JAVAICAN);
-  Instrument hat1 = opl2.loadInstrument(INSTRUMENT_SDRUM2);
-  Instrument perc = opl2.loadInstrument(INSTRUMENT_LOGDRUM1);
-
-  Instrument bass = opl2.loadInstrument(INSTRUMENT_BASS1);
-  Instrument synth = opl2.loadInstrument(INSTRUMENT_JAVAICAN);
-
-  opl2.setInstrument(0, kick);
-  opl2.setInstrument(1, snare);
-  opl2.setInstrument(2, rksnare);
-  opl2.setInstrument(3, tom);
-  opl2.setInstrument(4, hat);
-  opl2.setInstrument(5, hat1);
-  opl2.setInstrument(6, perc);
-  opl2.setInstrument(7, bass);
-  opl2.setInstrument(8, synth);
-  opl2.setBlock(0, 2); // octave
-  opl2.setBlock(1, 2);
-  opl2.setBlock(2, 2);
-  opl2.setBlock(3, 2);
-  opl2.setBlock(4, 2);
-  opl2.setBlock(5, 2);
-  opl2.setBlock(6, 2);
-  opl2.setBlock(7, 2);
-  opl2.setBlock(8, 2);
+  for(int i=0; i<9; i++) {
+    opl2.setInstrument(i, opl2.loadInstrument( instruments[i] ));
+    opl2.setBlock(i, 0); // octave
+  };
 
   // Set octave and frequency for bass drum.
   // opl2.setBlock(6, 5);
