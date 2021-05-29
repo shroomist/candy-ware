@@ -1,6 +1,7 @@
 #include "input.hpp"
 
-#define MIDI_DRUM_CH 16
+#define MIDI_CH_START 9
+#define MIDI_CH_END 17
 
 HardwareSerial Serial2(PA3, PA2); // RX, TX -- to unused pin PB1
 // #include <SoftwareSerial.h>
@@ -10,17 +11,6 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, midi2);
 void handleNoteOn(byte channel, byte pitch, byte velocity) {
   _PP("ch: ");
   _PL(channel);
-  if (channel == MIDI_DRUM_CH) {
-    _PP("trk: ");
-    byte track = pitch - 35;
-    _PL(track);
-    synth.play(track, 1);
-  }
-  if (channel < 16 && channel > 9) {
-    byte track = channel - 10;
-    synth.handleNote(track, pitch, velocity);
-  }
-
   _PP("MIDI NOTE ON ");
   _PP(" ch ");
   _PP(channel);
@@ -28,14 +18,14 @@ void handleNoteOn(byte channel, byte pitch, byte velocity) {
   _PP(pitch);
   _PP("velo ");
   _PL(velocity);
-  // synth.play(pitch, 1);
+  if (channel >= MIDI_CH_START && channel < MIDI_CH_END) {
+    byte track = channel - MIDI_CH_START;
+    synth.handleNote(track, pitch, velocity);
+  }
+
 }
 
 void handleNoteOff(byte channel, byte pitch, byte velocity) {
-  if (channel == 55) {
-    byte track = pitch - 35;
-    synth.play(track, 0);
-  }
   _PP("MIDI NOTE OfF ");
   _PP(" ch ");
   _PP(channel);
@@ -43,8 +33,8 @@ void handleNoteOff(byte channel, byte pitch, byte velocity) {
   _PP(pitch);
   _PP("velo ");
   _PL(velocity);
-  if (channel < 16 && channel > 9) {
-    byte track = channel - 10;
+  if (channel >= MIDI_CH_START && channel < MIDI_CH_END) {
+    byte track = channel - MIDI_CH_START;
     synth.handleNoteOff(track);
   }
 }
