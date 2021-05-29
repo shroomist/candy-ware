@@ -15,15 +15,6 @@ void Synth::handleNoteOff(byte track) {
   opl2.setKeyOn(track, false);
 }
 
-void Synth::play(byte inst, bool gate) {
-  _PP("synth play inst ");
-  _PL(inst);
-  if (gate) {
-    opl2.playNote(inst, octave[inst], NOTE_C);
-  } else {
-    opl2.setKeyOn(inst, false);
-  }
-}
 
 void initOPL () {
   opl2.init();
@@ -163,7 +154,6 @@ void tremVibratos(byte channel, byte value) {
 
 Synth::Synth():
   octave{0,0,0,0,0,0},
-  drums{DRUM_BASS,DRUM_SNARE,DRUM_TOM,DRUM_HI_HAT,DRUM_CYMBAL},
   channel(0)
 {};
 

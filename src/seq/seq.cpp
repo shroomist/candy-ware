@@ -29,14 +29,16 @@ int getStepLength (int bpm) {
 
 void playStep (Synth* synth) {
   for (byte i = 0; i <= 8 - 1; i++) {
-    synth->play(i, seqGate[i][currentStep]);
+    if (seqGate[i][currentStep]) { synth->handleNote(i, 1, 1); } // TODO: note pitch
+    else { synth->handleNoteOff(i); }
   }
 };
 
 auto getStepper (Synth* synth, int* currentStep) {
   return [&synth, currentStep] () {
     for (byte i = 0; i <= 8 - 1; i++) {
-      synth->play(i, seqGate[i][*currentStep]);
+      if (seqGate[i][*currentStep]) { synth->handleNote(i, 1, 1); } // TODO: note pitch
+      else { synth->handleNoteOff(i); }
     }
     *currentStep = *currentStep + 1;
   };
@@ -68,7 +70,8 @@ Sequencer::Sequencer (Synth* synth): synth(synth), currentStep(0) {
   sequencerGoNextStep.setCallback([this] () {
     for (byte i = 0; i <= 8 - 1; i++) {
       if (seqGate[i][currentStep]) {
-        this->synth->play(i, seqGate[i][currentStep]);
+        if (seqGate[i][currentStep]) { this->synth->handleNote(i, 1, 1); } // TODO: note pitch
+        else { this->synth->handleNoteOff(i); }
       }
     }
     if (currentStep >= 15) { currentStep = 0; }

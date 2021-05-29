@@ -13,9 +13,7 @@ class Synth: public Ctrl {
     param_btn_handles getHandles();
     void changeParam(byte ch, byte param, int value);
     byte octave[8];
-    byte drums[5];
     byte channel;
-    void play(byte inst, bool gate);
     void handleNote(byte inst, byte pitch, byte velo);
     void handleNoteOff(byte inst);
 };
