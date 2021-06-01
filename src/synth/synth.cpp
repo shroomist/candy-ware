@@ -1,4 +1,6 @@
 #include "synth.hpp"
+#include "../state.hpp"
+// #include <instruments.h>
 #include "instr.hpp"
 #include "debug.h"
 
@@ -22,6 +24,7 @@ void initOPL () {
   for(int i=0; i<9; i++) {
     opl2.setInstrument(i, opl2.loadInstrument( instruments[i] ));
     opl2.setBlock(i, 0); // octave
+    channelInstr[i] = i;
   };
 
   // Set octave and frequency for bass drum.
@@ -136,17 +139,29 @@ param_btn_handles Synth::getHandles() {
     int synthValue = map(v, 0, 4096, boundaries[t][0], boundaries[t][1]);
     changeParam(channel, t, synthValue);
   };
-  set_btn btnH = [this] (int t, bool v) {
+  set_btn btnH = [this](int t, bool v) {
     _PP("push ");
     _PP(t);
     _PP(" v = ");
     _PL(v);
+    if (t >= 0 && t <9){
     channel = t;
-    if(v) {
-      handleNote(t, octave[t], NOTE_C);
-    } else {
-      handleNoteOff(t);
+    currentChannel = t;
+      if (v) {
+        handleNote(t, octave[t], NOTE_C);
+      } else {
+        handleNoteOff(t);
+      }
     }
+    if (t == 10 && v) {
+      channelInstr[channel] = channelInstr[channel] - 1;
+      opl2.setInstrument(channel, opl2.loadInstrument( instruments[channelInstr[channel]] ));
+    }
+    if (t == 11 && v) {
+      channelInstr[channel] = channelInstr[channel] + 1;
+      opl2.setInstrument(channel, opl2.loadInstrument( instruments[channelInstr[channel]] ));
+    }
+
   };
   return param_btn_handles{potH, btnH};
 };

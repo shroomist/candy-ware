@@ -4,6 +4,8 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include "debug.h"
+#include "state.hpp"
+#include "synth/instr.hpp"
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
@@ -12,6 +14,8 @@ void animInit1();
 
 Task tAnimInit (TASK_IMMEDIATE, TASK_ONCE, &animInit, &runner);
 Task tAnimInit1 (TASK_IMMEDIATE, TASK_ONCE, &animInit1, &runner);
+
+char currentInstrumentDisplay[10];
 
 void animInit () {
   display.println(F("OPERA"));
@@ -27,16 +31,26 @@ void animInit1 () {
 };
 
 set_param setParam = [] (int t, int v) {
-  display.clearDisplay();
-  display.setCursor(0, 15);
+  // display.clearDisplay();
+  display.fillRect(0, 30, 100, 15, 0);
+  display.setCursor(0, 30);
   display.println(F("PARAM"));
+  display.print(F("tg: "));
+  display.print(t);
+  display.print(F(" vl: "));
+  display.print(v);
   display.display();
 };
 
 set_btn setBtn = [] (int t, bool v) {
-  display.clearDisplay();
+  // display.clearDisplay();
+  display.fillRect(0, 15, 100, 15, 0);
   display.setCursor(0, 15);
-  display.println(F("BATON"));
+  // strcpy_P(currentInstrumentDisplay, (char *)pgm_read_word(&(instNames[t])));
+  display.print(F("ch: "));
+  display.print(currentChannel);
+  display.print(F("in: "));
+  display.println(channelInstr[currentChannel]);
   display.display();
 };
 
@@ -49,7 +63,7 @@ void Displ::setup() {
   }
 
   display.clearDisplay();
-  display.setTextSize(4);              // Normal 1:1 pixel scale
+  display.setTextSize(1);              // Normal 1:1 pixel scale
   display.setTextColor(SSD1306_WHITE); // Draw white text
   display.setCursor(0, 15);
   tAnimInit.enable();
