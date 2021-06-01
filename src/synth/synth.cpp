@@ -1,45 +1,32 @@
 #include "synth.hpp"
 #include "../state.hpp"
-// #include <instruments.h>
 #include "instr.hpp"
 #include "debug.h"
 
 OPL2 opl2 = OPL2(PB8,PB9,PB10);
 
-void Synth::handleNote(byte track, byte pitch, byte velocity) {
-  _PP("playNote ");
-  _PP(track);
-  _PP(" pitch ");
-  _PP(pitch / 12)
-  opl2.playNote(track,  pitch / 12, pitch % 12);
+byte contain(int x, int min, int max) {
+  x = x < 0 ? 0 : x;
+  x = x > max ? max : x;
+  return x;
+}
+void Synth::handleNote(byte track, int pitch, byte velocity) {
+
+  opl2.playNote(track, contain(pitch / 12 + octave[track], 0, 7), pitch % 12);
 }
 void Synth::handleNoteOff(byte track) {
   opl2.setKeyOn(track, false);
 }
-
 
 void initOPL () {
   opl2.init();
 
   for(int i=0; i<9; i++) {
     opl2.setInstrument(i, opl2.loadInstrument( instruments[i] ));
-    opl2.setBlock(i, 0); // octave
+    opl2.setBlock(i, 3); // octave
     channelInstr[i] = i;
   };
 
-  // Set octave and frequency for bass drum.
-  // opl2.setBlock(6, 5);
-  // opl2.setFNumber(6, opl2.getNoteFNumber(NOTE_C));
-
-  // // Set octave and frequency for snare drum and hi-hat.
-  // opl2.setBlock(7, 2);
-  // opl2.setFNumber(7, opl2.getNoteFNumber(NOTE_C));
-  // // Set low volume on hi-hat
-  // opl2.setVolume(7, OPERATOR1, 16);
-
-  // // Set octave and frequency for tom tom and cymbal.
-  // opl2.setBlock(8, 3);
-  // opl2.setFNumber(8, opl2.getNoteFNumber(NOTE_A));
 };
 
 void Synth::changeParam(byte channel, byte param, int value) {
@@ -64,13 +51,12 @@ void Synth::changeParam(byte channel, byte param, int value) {
       opl2.setFeedback(channel, value);
       break;
     case 6:
+
       // with no shift we change octaves
       // if (bitRead(!keyboardAccumulator, 0)) {
-        octave[channel] = value >> 2;
-        _PP("ch ");
-        _PP(channel);
-        _PP(" ");
-        _PL(octave[channel]);
+        // octave[channel] = value >> 2;
+        octave[channel] = value;
+        opl2.setBlock(channel, octave[channel]);
         // opl2.setBlock(channel, value >> 2);
       // } else { // while pressing SHIFT we change notes
       //   opl2.playNote(channel, octave[channel], value);
@@ -130,7 +116,7 @@ void tremVibratos(byte channel, byte value) {
 }
 
 Synth::Synth():
-  octave{0,0,0,0,0,0},
+  octave{3,3,3,3,3,3},
   channel(0)
 {};
 
@@ -140,15 +126,11 @@ param_btn_handles Synth::getHandles() {
     changeParam(channel, t, synthValue);
   };
   set_btn btnH = [this](int t, bool v) {
-    _PP("push ");
-    _PP(t);
-    _PP(" v = ");
-    _PL(v);
     if (t >= 0 && t <9){
     channel = t;
     currentChannel = t;
       if (v) {
-        handleNote(t, octave[t], NOTE_C);
+        handleNote(t, NOTE_C, 1);
       } else {
         handleNoteOff(t);
       }

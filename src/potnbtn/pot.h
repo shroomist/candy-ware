@@ -16,7 +16,7 @@ const int boundaries[POT_COUNT][2] = { // was [24][2]
     {15, 0}, // 3 REL 1
     {0, 15}, // 4 MULT 1
     {0, 7},  // 5 FEED
-    {0, 24}, // 6 NOTE
+    {0, 7}, // 6 NOTE
     {64, 0}, // 7 VOL 1
     {15, 0}, // 8 ATT 2
     {15, 0}, // 9 DEC 2
